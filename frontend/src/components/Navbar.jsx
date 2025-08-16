@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {
   const { user, logout } = useAuth()
   const location = useLocation()
+  const [isOpen, setIsOpen] = useState(false)
+
+  const toggleMenu = () => setIsOpen((s) => !s)
 
   const isActive = (path) => location.pathname === path
 
@@ -12,7 +15,16 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="nav-container">
         <h1 className="nav-title">🛩️ AeromodellismoFano</h1>
-        <div className="nav-links">
+        <button
+          className={`nav-toggle ${isOpen ? 'open' : ''}`}
+          onClick={toggleMenu}
+          aria-expanded={isOpen}
+          aria-label={isOpen ? 'Chiudi menu' : 'Apri menu'}
+        >
+          <span className="hamburger" />
+        </button>
+
+        <div className={`nav-links ${isOpen ? 'open' : ''}`}>
           <Link 
             to="/" 
             className={`nav-link ${isActive('/') ? 'active' : ''}`}
@@ -44,7 +56,7 @@ const Navbar = () => {
             Modelli
           </Link>
           <span className="user-info">Ciao, {user?.nome}!</span>
-          <button onClick={logout} className="logout-btn">
+          <button onClick={() => { setIsOpen(false); logout() }} className="logout-btn">
             Logout
           </button>
         </div>
